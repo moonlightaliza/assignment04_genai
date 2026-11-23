@@ -11,6 +11,8 @@ sys.path.append("../starter")
 from starter.eurosat import load_eurosat_split, patchify
 from model import MaskedAutoEncoder
 
+SAVE_DIR = "/content/drive/MyDrive/genai_a4/part_a"
+os.makedirs(SAVE_DIR, exist_ok=True)
 
 def train_mae():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -56,16 +58,16 @@ def train_mae():
         if epoch % 10 == 0 or epoch == 1:
             print(f"Epoch [{epoch:3d}/{num_epochs}] | Masked MSE: {avg_loss:.6f}")
         if epoch % 10 == 0:
-            torch.save(model.state_dict(), "mae_pretrained.pth")   # safety checkpoint
+            torch.save(model.state_dict(), f"{SAVE_DIR}/mae_pretrained.pth")   # safety checkpoint
 
     train_time = time.time() - start
-    torch.save(model.state_dict(), "mae_pretrained.pth")
+    torch.save(model.state_dict(), f"{SAVE_DIR}/mae_pretrained.pth")
     print(f"Done in {train_time/60:.1f} min")
 
     os.makedirs("../results", exist_ok=True)
 
     # per-epoch log + Table 2 info
-    with open("../results/mae_pretrain_log.json", "w") as f:
+    with open(f"{SAVE_DIR}/mae_pretrain_log.json", "w") as f:
         json.dump({"epoch_losses": epoch_losses,
                    "params": num_params,
                    "train_time_sec": train_time,
@@ -78,7 +80,7 @@ def train_mae():
     plt.title("MAE pretraining loss")
     plt.grid(True)
     plt.legend()
-    plt.savefig("../results/mae_pretrain_loss.png", dpi=200, bbox_inches="tight")
+    plt.savefig(f"{SAVE_DIR}/mae_pretrain_loss.png", dpi=200, bbox_inches="tight")
     plt.close()
 
 
