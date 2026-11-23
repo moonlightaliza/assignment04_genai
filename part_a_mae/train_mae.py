@@ -7,7 +7,9 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
 import matplotlib.pyplot as plt
 
-sys.path.append("../starter")
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(ROOT)
+
 from starter.eurosat import load_eurosat_split, patchify
 from model import MaskedAutoEncoder
 
