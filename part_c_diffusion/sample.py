@@ -13,7 +13,11 @@ from schedule import make_schedule, T
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.manual_seed(0)
 
-unet = UNet2DModel(...).to(device)     # SAME constructor as train.py
+unet = UNet2DModel(sample_size=28, in_channels=1, out_channels=1, layers_per_block=2,
+    block_out_channels=(32, 64, 128),
+    down_block_types=("DownBlock2D", "AttnDownBlock2D", "AttnDownBlock2D"),
+    up_block_types=("AttnUpBlock2D", "AttnUpBlock2D", "UpBlock2D"),
+    num_class_embeds=40).to(device)     # SAME constructor as train.py
 unet.load_state_dict(torch.load("diffusion.pth", map_location=device))
 unet.eval()
 betas, alphas, alpha_bars = make_schedule(device)
